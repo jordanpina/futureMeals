@@ -1,4 +1,5 @@
- 
+const cookieController = require('../util/cookieController');
+
 
 const userController = {};
 // require user model here later
@@ -10,6 +11,13 @@ const userController = {};
 //verify that password matches
 
 userController.verifyUser = (req, res, next) => {
+// ***************************************************************
+    // cookie logic
+// ***************************************************************
+    //set cookie ssid
+    //cookieController.setSSIDCookie(req, res, user._id);
+// ***************************************************************
+
     // let username = req.body.username;
     // let password = req.body.password;
     // if (!username || !password) res.send('Please, enter username AND password');
@@ -50,7 +58,7 @@ userController.addToUsersTable = (req, res, next) => {
     // let healthlabel = '';
     // //yeah Alyssa did this. goodluck figuring out why. sorrynotsorry
     // if (req.body.healthlabel) {
-    //     healthlabel = req.body.healthlabel.reduce((res, curr, i) => { 
+    //     healthlabel = req.body.healthlabel.reduce((res, curr, i) => {
     //         res += curr;
     //         if(i<req.body.healthlabel.length-1) res += ', ';
     //         return res;
@@ -67,15 +75,23 @@ userController.addToUsersTable = (req, res, next) => {
 //POST REQUEST FROM SIGNUP (CONTINUED):
 //create table for each new user when they sign up
 userController.createUserTable = (req, res, next) => {
+  // ***************************************************************
+      // cookie logic
+  // ***************************************************************
+      //set cookie ssid
+      //cookieController.setSSIDCookie(req, res, user._id);
+  // ***************************************************************
+
+
     // let username = req.body.username;
     // db.conn.query(`CREATE TABLE ${username} (
     //                 "_id" SERIAL PRIMARY KEY NOT NULL,
     //                 "day" TEXT,
-    //                 "label" TEXT, 
-    //                 "image" TEXT, 
-    //                 "url" TEXT, 
-    //                 "yield" INT, 
-    //                 "healthLabels" TEXT[], 
+    //                 "label" TEXT,
+    //                 "image" TEXT,
+    //                 "url" TEXT,
+    //                 "yield" INT,
+    //                 "healthLabels" TEXT[],
     //                 "ingredientLines" TEXT[]
     //              );`,
     //     (error, result) => {

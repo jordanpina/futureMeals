@@ -9,7 +9,7 @@ module.exports = {
     loaders: [
       { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
       { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ },
-      {test: /scss$/, exclude: /node_modules/, loaders: ['style', 'css', 'sass']}
+      {test: /scss$/, exclude: /node_modules/, loaders: ['style-loader', 'css-loader', 'sass-loader']}
     ]
   }
 }
