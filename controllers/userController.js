@@ -1,5 +1,7 @@
+const cookieController = require('../util/cookieController');
 const User = require('../models/userTable');
 const bcrypt = require('bcryptjs');
+
 
 const userController = {};
 //POST REQUEST FROM LOGIN:
@@ -17,6 +19,7 @@ function decryptPassword(plaintext, hash) {
 }
 
 userController.verifyUser = (req, res, next) => {
+
     console.log('verifyUser');
     let username = req.body.username;
     let password = req.body.password;
@@ -62,7 +65,7 @@ userController.addToUsersTable = (req, res, next) => {
     // let healthlabel = '';
     // //yeah Alyssa did this. goodluck figuring out why. sorrynotsorry
     // if (req.body.healthlabel) {
-    //     healthlabel = req.body.healthlabel.reduce((res, curr, i) => { 
+    //     healthlabel = req.body.healthlabel.reduce((res, curr, i) => {
     //         res += curr;
     //         if(i<req.body.healthlabel.length-1) res += ', ';
     //         return res;
@@ -75,5 +78,4 @@ userController.addToUsersTable = (req, res, next) => {
     //                    else next();
     //                });
 }
-
 module.exports = userController;
