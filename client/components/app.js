@@ -15,11 +15,11 @@ class App extends Component {
     this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
     this.handleRecipeRender = this.handleRecipeRender.bind(this);
     this.state = {
-      0: true,
+      0: false,
       1: false,
-      2: false,
+      2: true,
       3: false,
-      username: '',
+      username: 'brian',
       password: '',
     }
   }
@@ -42,10 +42,10 @@ class App extends Component {
 
   handleSignUpSubmit(e) {
     console.log('inside handlesignupsubmit')
-    this.setState({ 0: false, 1: false, 2: true, 3: false })
     axios.post('/signup', { username: this.state.username, password: this.state.password })
       .then(response => {
         console.log('response', response)
+        this.setState({ 0: false, 1: false, 2: true, 3: false })
         //response.data
       })
       .catch(err => {
@@ -88,13 +88,13 @@ class App extends Component {
     } else if (this.state[2] === true) {
       return (
         <div>
-          <RecipeDisplay username={this.state.username} handleProfileClick={this.handleProfileClick}/>
+          <RecipeDisplay username={this.state.username} handleProfileClick={this.handleProfileClick} />
         </div>
       )
     } else if (this.state[3] === true) {
       return (
         <div>
-          <Profile username={this.state.username}/>
+          <Profile username={this.state.username} />
         </div>
       )
     }

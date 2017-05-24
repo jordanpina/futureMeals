@@ -10,7 +10,7 @@ class RecipeDisplay extends Component {
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
     this.handleRecipeChange = this.handleRecipeChange.bind(this);
     this.state = {
-      q: "",
+      query: "",
       healthlabel: "",
       recipes: [],
     }
@@ -26,16 +26,34 @@ class RecipeDisplay extends Component {
   handleSearchSubmit(e) {
     e.preventDefault();
     let base = 'https://api.edamam.com/search?';
-    let q = `q=${this.state.q}`;
+    let query = `q=${this.state.query}`;
     let idAndKey = `&app_id=9c91d5f4&app_key=6f47ee6858565edebe96788f8743461a`;
-    let range = `&from=0&to=5`;
+    let range = `&from=0&to=100`;
     //let health = `&health=`;
-    let url = base + q + idAndKey + range;
+    let url = base + query + idAndKey + range;
     axios.get(url)
-
       .then((response) => {
-        //response.hits is an array of 5 recipe objects... or at least should be.. test?
-        this.setState({ recipes: response.data.hits });
+        function shuffle(array) {
+          var currentIndex = array.length, temporaryValue, randomIndex;
+
+          // While there remain elements to shuffle...
+          while (0 !== currentIndex) {
+
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temporaryValue = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temporaryValue;
+          }
+
+          return array;
+        }
+        response.data.hits=shuffle(response.data.hits);
+        //response.data.hits is an array of first 100 recipe objects (or however many exist).
+        this.setState({ recipes: response.data.hits.slice(0,10) });
       })
   }
 
@@ -53,7 +71,7 @@ class RecipeDisplay extends Component {
       <div>
         <h1>Search for a Recipe</h1>
         <form onSubmit={this.handleSearchSubmit}>
-          <input placeholder="Search" type="text" name="q" value={this.state.q} onChange={this.handleRecipeChange} />
+          <input placeholder="Search" type="text" name="query" value={this.state.query} onChange={this.handleRecipeChange} />
           <input type="submit" value="submit" />
         </form>
         <button onClick={this.props.handleProfileClick}>Profile</button>
