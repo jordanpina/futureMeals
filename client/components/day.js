@@ -30,7 +30,6 @@ class Day extends Component {
   }
 
   render() {
-
     const recipes = this.state.savedRecipes.map((curr, index) => {
       return <SavedRecipe recipeData={curr} key={index} />
     });

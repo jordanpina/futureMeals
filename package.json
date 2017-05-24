@@ -23,7 +23,9 @@
     "path": "^0.12.7",
     "pg": "^6.2.2",
     "react": "^15.5.4",
+    "react-addons-css-transition-group": "^15.5.2",
     "react-dom": "^15.5.4",
+    "react-infinite-calendar": "^2.3.1",
     "sequelize": "^3.30.4",
     "webpack": "^2.5.1"
   },

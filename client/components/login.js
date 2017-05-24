@@ -18,7 +18,7 @@ class Login extends Component {
         <input type="submit" value="Login"/>
       </form>
       <p>Don't have an account?</p> 
-        <button bsStyle="primary" value="signup" onClick={this.props.handleSignUpClick}>Sign Up</button>
+        <button value="signup" onClick={this.props.handleSignUpClick}>Sign Up</button>
     </div>
     )
   }
