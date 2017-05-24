@@ -4,100 +4,117 @@ import Login from './login.js';
 import Signup from './signup.js';
 import Profile from './profile.js';
 import RecipeDisplay from './recipeDisplay.js';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Redirect
+} from 'react-router-dom';
 
 class App extends Component {
   constructor(props) {
     super(props)
-    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSignUpClick = this.handleSignUpClick.bind(this);
-    this.handleProfileClick = this.handleProfileClick.bind(this);
-    this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
-    this.handleRecipeRender = this.handleRecipeRender.bind(this);
     this.state = {
-      0: true,
-      1: false,
-      2: false,
-      3: false,
       username: '',
       password: '',
+      isAuthenticated: false,
     }
-  }
+    this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
 
-  handleSignUpClick() {
-    this.setState({ 0: false, 1: true, 2: false, 3: false })
-  }
-
-  handleProfileClick() {
-    this.setState({ 0: false, 1: false, 2: false, 3: true })
-  }
-
-  handleRecipeRender() {
-    this.setState({ 0: false, 1: false, 2: true, 3: false })
+    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value })
+    this.setState({ [e.target.name]: e.target.value });
   }
 
-  handleSignUpSubmit(e) {
-    console.log('inside handlesignupsubmit')
-    this.setState({ 0: false, 1: false, 2: true, 3: false })
+  handleSignUpSubmit() {
     axios.post('/signup', { username: this.state.username, password: this.state.password })
-      .then(response => {
-        console.log('response', response)
-        //response.data
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
-  handleLoginSubmit(e) {
-    e.preventDefault();
-    axios.post('/login', { username: this.state.username, password: this.state.password })
-      .then(response => {
-        this.setState({ 0: false, 1: false, 2: true, 3: false })
-        // this.handleRecipeRender();
-      })
-      .catch(err => {
-        console.log(err)
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState({ isAuthenticated: true });
+        } else {
+          this.setState({ isAuthenticated: false });
+        }
       });
   }
 
-
-  // componentDidMount() {
-  //   axios.post(
-  // }
-
+  handleLoginSubmit() {
+    axios.post('/login', { username: this.state.username, password: this.state.password })
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState({ isAuthenticated: true });
+          // <Redirect to={{
+          //   pathname: '/',
+          // }}/>
+        } else {
+          this.setState({ isAuthenticated: false });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   render() {
-    console.log(this.state)
-    if (this.state[0] === true) {
-      return (
+
+    return (
+      <Router>
         <div>
-          <Login handleSignUpClick={this.handleSignUpClick} handleChange={this.handleChange} handleLoginSubmit={this.handleLoginSubmit} />
+          <Route exact path="/" render={()=> (
+            <div>
+              <Login
+                handleSignUpClick={this.handleSignUpClick}
+                handleChange={this.handleChange}
+                handleLoginSubmit={this.handleLoginSubmit}
+              />
+            </div>
+          )}/>
+          <Route exact path="/signup" render={()=> (
+            <div>
+              <Signup
+                handleChange={this.handleChange}
+                handleSignUpSubmit={this.handleSignUpSubmit}
+                isAuthenticated={this.state.isAuthenticated}
+              />
+            </div>
+          )}/>
+          <Route exact path="/profile" render={()=>(
+            this.state.isAuthenticated ?
+            (<div>
+              <Profile
+                username={this.state.username}
+                isAuthenticated={this.state.isAuthenticated}
+              />
+            </div> ): (
+                <Redirect to={{
+                  pathname: '/',
+                }}/>
+              )
+            )}/>
+
+          <Route exact path="/recipedisplay" render={()=>(
+          this.state.isAuthenticated ?
+          (<div>
+            <RecipeDisplay
+              handleChange={this.handleChange}
+              handleSignUpClick={this.handleSignUpClick}
+              handleLoginSubmit={this.handleLoginSubmit}
+            />
+          </div> ): (
+              <Redirect to={{
+                pathname: '/',
+              }}/>
+            )
+          )}/>
+
+          
+
         </div>
-      )
-    } else if (this.state[1] === true) {
-      return (
-        <div>
-          <Signup handleChange={this.handleChange} handleSignUpSubmit={this.handleSignUpSubmit} />
-        </div>
-      )
-    } else if (this.state[2] === true) {
-      return (
-        <div>
-          <RecipeDisplay username={this.state.username} handleProfileClick={this.handleProfileClick}/>
-        </div>
-      )
-    } else if (this.state[3] === true) {
-      return (
-        <div>
-          <Profile username={this.state.username}/>
-        </div>
-      )
-    }
+      </Router>
+
+    )
   }
 }
 
