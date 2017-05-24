@@ -19,6 +19,7 @@ class Login extends Component {
       </form>
       <p>Don't have an account?</p>
       <Link to="/signup">Signup</Link>
+
         <button value="signup" onClick={this.props.handleSignUpClick}>Sign Up</button>
     </div>
     )

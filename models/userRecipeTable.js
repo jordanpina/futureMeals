@@ -25,5 +25,5 @@ var User_Recipe = sequelize.define('user_recipe', {
     })
 
     User_Recipe.sync().then(() => {console.log("user_recipe table created")});
-
+    
 module.exports = User_Recipe;

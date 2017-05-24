@@ -1,58 +1,65 @@
 const cookieController = require('../util/cookieController');
+const User = require('../models/userTable');
+const bcrypt = require('bcryptjs');
 
 
 const userController = {};
-// require user model here later
-// ^^^ didnt actually use sequilize. did it raw6969
-
 //POST REQUEST FROM LOGIN:
 //verify that username enters username and password
 //verify that username exists in users table
 //verify that password matches
 
-userController.verifyUser = (req, res, next) => {
-// ***************************************************************
-    // cookie logic
-// ***************************************************************
-    //set cookie ssid
-    //cookieController.setSSIDCookie(req, res, user._id);
-// ***************************************************************
+function encryptPassword(plaintext) {
+    const salt = bcrypt.genSaltSync(10);
+    return bcrypt.hashSync(plaintext, salt);
+}
 
-    // let username = req.body.username;
-    // let password = req.body.password;
-    // if (!username || !password) res.send('Please, enter username AND password');
-    // else {
-    //     db.conn.query(`SELECT username, password FROM users WHERE username = '${username}';`,
-    //         (error, result) => {
-    //             if (error) res.send(error);
-    //             else if (!result.rows.length) res.status(400).send('no username found');
-    //             else {
-    //                 if (password === result.rows[0].password) {
-    //                     res.status(200).send('password matches');
-    //                 }
-    //                 else {
-    //                     res.status(400).send('wrong password');
-    //                 }
-    //         }
-    //     });
-    // }
+function decryptPassword(plaintext, hash) {
+    return bcrypt.compareSync(plaintext, hash);
+}
+
+userController.verifyUser = (req, res, next) => {
+
+    console.log('verifyUser');
+    let username = req.body.username;
+    let password = req.body.password;
+    if (!username || !password) res.send('Please, enter username AND password');
+    else {
+        User.findOne({where: {username: username}})
+            .then((user) => {
+                if (user) {
+                    console.log(password, user.password);   
+                    if (decryptPassword(password, user.password)) {
+                        return res.status(200).send();                       
+                    }                 
+                } 
+                res.status(400).send();})
+            .error((err) => {console.log(err); res.status(400).send();});
+    }
 }
 
 //POST REQUEST FROM SIGNUP:
 //checks if username already exists in users table
 //if username already exists, don't create new user
 userController.checkIfUsernameExists = (req, res, next) => {
-    // let username = req.body.username;
-    // db.conn.query(`SELECT username FROM users WHERE username = '${username}';`,
-    //     (error, result) => {
-    //         if (result.rows.length) res.status(400).send('username exists already');
-    //         else next();
-    //     });
+    console.log('checkIfUsernameExists');
+    let username = req.body.username;
+    User.findOne({where: {username: username}})
+        .then((user) => {
+            if (user) {
+                return res.status(400).send(`${username} exists already`);
+            } else {
+                next();}})
+        .error((err) => {console.log(err); res.status(400).send();});
 }
 
 //POST REQUEST FROM SIGNUP (CONTINUED):
 //adds username to users table
 userController.addToUsersTable = (req, res, next) => {
+    const hash = encryptPassword(req.body.password);
+    User.upsert({username: req.body.username, password: hash, healthLabel: []})
+        .then((created) => {created ? res.status(200).send() : res.status(400).send();})
+        .error((err) => {console.log(err); res.status(400).send();});
     // let username = req.body.username;
     // let password = req.body.password;
     // let healthlabel = '';
@@ -71,33 +78,4 @@ userController.addToUsersTable = (req, res, next) => {
     //                    else next();
     //                });
 }
-
-//POST REQUEST FROM SIGNUP (CONTINUED):
-//create table for each new user when they sign up
-userController.createUserTable = (req, res, next) => {
-  // ***************************************************************
-      // cookie logic
-  // ***************************************************************
-      //set cookie ssid
-      //cookieController.setSSIDCookie(req, res, user._id);
-  // ***************************************************************
-
-
-    // let username = req.body.username;
-    // db.conn.query(`CREATE TABLE ${username} (
-    //                 "_id" SERIAL PRIMARY KEY NOT NULL,
-    //                 "day" TEXT,
-    //                 "label" TEXT,
-    //                 "image" TEXT,
-    //                 "url" TEXT,
-    //                 "yield" INT,
-    //                 "healthLabels" TEXT[],
-    //                 "ingredientLines" TEXT[]
-    //              );`,
-    //     (error, result) => {
-    //         if (error) res.status(400).send(error);
-    //         else res.status(200).send('created new table for new user');
-    //     });
-}
-
 module.exports = userController;

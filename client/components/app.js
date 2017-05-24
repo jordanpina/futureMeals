@@ -38,6 +38,7 @@ class App extends Component {
           this.setState({ isAuthenticated: false });
         }
       });
+
   }
 
   handleLoginSubmit() {
@@ -58,7 +59,6 @@ class App extends Component {
   }
 
   render() {
-
     return (
       <Router>
         <div>
@@ -108,9 +108,6 @@ class App extends Component {
               }}/>
             )
           )}/>
-
-          
-
         </div>
       </Router>
 
