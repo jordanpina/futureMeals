@@ -2,8 +2,8 @@
 const cookieController = {};
 cookieController.setSSIDCookie = setSSIDCookie;
 
-function setSSIDCookie(req, res, id) {
-  res.cookie('ssid', id, { httpOnly: true });
+function setSSIDCookie(req, res, _id) {
+  res.cookie('ssid', _id, { httpOnly: true, maxAge: 600000});
 }
 
 module.exports = cookieController;

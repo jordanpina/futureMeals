@@ -14,18 +14,20 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'client/public')));
-app.get('*', (req,res)=>{
-  res.sendFile(path.resolve(__dirname + '/client/public/index.html'));
-})
+
 
 app.use(bodyParser.json());
 
 
 app.post('/login', userController.verifyUser);
-app.post('/signup', userController.checkIfUsernameExists, 
+app.post('/signup', userController.checkIfUsernameExists,
                     userController.addToUsersTable);
 app.post('/recipeDisplay', recipeController.saveRecipe);
 app.get('/getRecipes', recipeController.getRecipes);
+
+app.get('*', (req,res)=>{
+  res.sendFile(path.resolve(__dirname + '/client/public/index.html'));
+})
 
 
 app.listen(3000);

@@ -1,4 +1,5 @@
 const cookieController = require('../util/cookieController');
+const sessionController = require('../sessions/sessionController');
 const User = require('../models/userTable');
 const bcrypt = require('bcryptjs');
 
@@ -28,11 +29,13 @@ userController.verifyUser = (req, res, next) => {
         User.findOne({where: {username: username}})
             .then((user) => {
                 if (user) {
-                    console.log(password, user.password);   
+                    // console.log(password, user.password);
                     if (decryptPassword(password, user.password)) {
-                        return res.status(200).send();                       
-                    }                 
-                } 
+                        cookieController.setSSIDCookie(req, res, user._id);
+                        // sessionController.startSession(user._id, function() { console.log('poop') });
+                        return res.status(200).send();
+                    }
+                }
                 res.status(400).send();})
             .error((err) => {console.log(err); res.status(400).send();});
     }
@@ -46,6 +49,7 @@ userController.checkIfUsernameExists = (req, res, next) => {
     let username = req.body.username;
     User.findOne({where: {username: username}})
         .then((user) => {
+          // console.log(user._id);
             if (user) {
                 return res.status(400).send(`${username} exists already`);
             } else {
@@ -58,7 +62,23 @@ userController.checkIfUsernameExists = (req, res, next) => {
 userController.addToUsersTable = (req, res, next) => {
     const hash = encryptPassword(req.body.password);
     User.upsert({username: req.body.username, password: hash, healthLabel: []})
-        .then((created) => {created ? res.status(200).send() : res.status(400).send();})
+        .then((created) => {
+          if (created) {
+            User.findOne({where: {username: req.body.username}})
+                .then((user) => {
+                    if (user) {
+                      // console.log('username', user.username)
+                      // console.log('user _id',user._id);
+                      cookieController.setSSIDCookie(req, res, user._id);
+                      res.status(200);
+                      res.end();
+                    } else {
+                        next();}})
+                .error((err) => {console.log(err); res.status(400).send();});
+          } else{
+            res.status(400).send();
+          }
+        })
         .error((err) => {console.log(err); res.status(400).send();});
     // let username = req.body.username;
     // let password = req.body.password;

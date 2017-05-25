@@ -12,15 +12,14 @@ class Login extends Component {
       <div className="jumbotron">
         <h1>Recipe Generator</h1>
       </div>
+      
       <form onSubmit={this.props.handleLoginSubmit}>
         <input placeholder="Username" type="text" name="username" value={this.props.username} onChange={this.props.handleChange} />
         <input placeholder="Password" type="password" name="password" value={this.props.password} onChange={this.props.handleChange} />
-        <Link to="/profile" onClick={this.props.handleLoginSubmit}>Login</Link>
+        <Link to="/profile" onClick={this.props.handleLoginSubmit}><button>Login</button></Link>
       </form>
       <p>Don't have an account?</p>
-      <Link to="/signup">Signup</Link>
-
-        <button value="signup" onClick={this.props.handleSignUpClick}>Sign Up</button>
+      <Link to="/signup"><button>Signup</button></Link>
     </div>
     )
   }

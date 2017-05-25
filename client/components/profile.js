@@ -14,6 +14,8 @@ class Profile extends Component {
     // this.handleCalendarSelect = handleCalendarSelect.bind(this);
   }
 
+
+
   handleCalendarSelect(day) {
     day = day.toISOString().slice(0, 10);
     console.log(day, this.props.username);
