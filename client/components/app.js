@@ -18,7 +18,7 @@ class App extends Component {
     this.state = {
       username: '',
       password: '',
-      isAuthenticated: false//change this to false
+      isAuthenticated: false
     }
     this.handleSignUpSubmit = this.handleSignUpSubmit.bind(this);
     // this.handleProfileClick = this.handleProfileClick.bind(this);
